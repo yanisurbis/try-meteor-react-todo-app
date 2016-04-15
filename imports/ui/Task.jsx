@@ -4,19 +4,28 @@ import { Tasks } from '../api/tasks.js'
 
 import { Meteor } from 'meteor/meteor'
 
+import classnames from 'classnames'
+
 export default class Task extends Component {
 
   toggleChecked() {
-    Mateor.call('tasks.setChecked', this.props.task._id, !this.props.task.checked)
+    Meteor.call('tasks.setChecked', this.props.task._id, !this.props.task.checked)
   }
 
   deleteThisTask() {
     Meteor.call('tasks.remove', this.props.task._id)
   }
 
+  togglePrivate() {
+    Meteor.call('tasks.setPrivate', this.props.task._id, !this.props.task.private)
+  }
+
   render() {
 
-    const taskClassName = this.props.task.checked ? 'checked' : ''
+    const taskClassName = classnames({
+      checked: this.props.task.checked,
+      private: this.props.task.private,
+    });
 
     return (
       <li className={taskClassName}>
@@ -31,6 +40,12 @@ export default class Task extends Component {
           onClick={this.toggleChecked.bind(this)}
         />
 
+        { this.props.showPrivateButton ? (
+          <button className="toggle-private" onClick={this.togglePrivate.bind(this)}>
+            { this.props.task.private ? 'Make Public' : 'Make Private' }
+          </button>
+        ) : ''}
+
         <span className="text">
           <strong>{this.props.task.username}</strong> :
           {this.props.task.text}
@@ -43,4 +58,5 @@ export default class Task extends Component {
 
 Task.propTypes = {
   task: PropTypes.object.isRequired,
+  showPrivateButton: React.PropTypes.bool.isRequired,
 }

@@ -1,3 +1,8 @@
 .checked {
   text-decoration: line-through;
 }
+
+li.private {
+  border-style:dotted;
+  border-width: 1px;
+}
